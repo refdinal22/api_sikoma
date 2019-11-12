@@ -29,6 +29,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('mahasiswa/proposal', 'MahasiswaController@proposal');
     $router->post('mahasiswa/team', 'MahasiswaController@team');
 
+    //Jurusan
+    $router->get('departments', 'DepartmentController@getAll');
+
+    //Kompetisi
+    $router->get('competitions', 'CompetitionController@getAll');
+
 
     
 });
