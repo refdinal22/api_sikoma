@@ -5,8 +5,8 @@
 -   tymon/jwt-auth Version : dev-develop
 
 ## Use the project
--   Clone the repo : `git clone https://github.com/wahyaumau/lumen-jwt-authentication.git`
--   Enter the project : `cd lumen-jwt-authentication`
+-   Clone the repo : `git clone https://github.com/refdinal22/api_sikoma.git`
+-   Enter the project : `cd api_sikoma`
 -   Install composer dependency for current project : `composer install`
 -   Copy file .env.example, and then paste it as .env, and then set your .env file
 -   Generate APP key : `php artisan key:generate`
