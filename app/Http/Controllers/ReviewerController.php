@@ -15,4 +15,10 @@ class ReviewerController extends Controller
     public function review(){
         
     }
+
+    public function getProposals(){
+    	$proposals = Proposal::all();
+
+    	return $proposals;
+    }
 }

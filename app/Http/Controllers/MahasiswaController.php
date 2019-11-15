@@ -17,18 +17,6 @@ class MahasiswaController extends Controller
         $this->validate($request, [
             'proposal' => 'required',            
         ]); 
-        
-        //get Proposal file
-        $comp_id = $request->input('competition');
-        $file = $request->file('proposal');
-        $proposal_folder = "proposals";
-         
-        $extension = $file->getClientOriginalExtension();
-        $tanggal = Carbon::now()->format('dMY');
-        $proposal_name = "Proposal".$comp_id.$tanggal.".".$extension;
-
-        //Upload
-        $file->move($proposal_folder, $proposal_name);
 
         //Membuat Objek Proposal
         $proposal = new Proposal;
@@ -37,7 +25,7 @@ class MahasiswaController extends Controller
         $proposal->department_id = $request->input('department');
         $proposal->draft_budget = $request->input('draftbudget');
         $proposal->summary = $request->input('summary');
-        $proposal->proposal = $proposal_name;
+        $proposal->proposal = $request->input('proposal');
         $proposal->status = "PENDING";
 
         $proposal->save();
@@ -59,11 +47,58 @@ class MahasiswaController extends Controller
         $team->mentor_id = $request->input('mentor');
         $team->proposal_id = $request->input('proposal');
         $team->competition_cat = $request->input('competition');
-
+        // $team->competition_cat = "ICPC";
         $team->save();
 
         return response()->json([
-            'succes' => true,            
+            'succes' => true,                
         ], 200); 
+    }
+
+    public function getProposal(Request $request){
+
+        $nim = $request->input('nim');
+        // return $nim;
+        $team = Team::where('leader_id', 'LIKE', '%' . $nim .'%')
+        ->orWhere('member1_id', 'LIKE', '%' . $nim .'%')
+        ->orWhere('member2_id', 'LIKE', '%' . $nim .'%')
+        ->orWhere('member3_id', 'LIKE', '%' . $nim .'%')
+        ->orWhere('member4_id', 'LIKE', '%' . $nim .'%')
+        ->get();
+
+        // return $team[0]->proposal_id;
+
+        $proposal = Proposal::find($team[0]->proposal_id);
+
+        return $proposal;
+        // Team::where(function ($query) {
+        //     $query->where('leader_id', 'LIKE', '%'.$nim.'%')
+        //     ->orWhere('member1_id', 'LIKE', '%'.$nim.'%');})->get();
+            // ->orWhere('member2_id', 'LIKE', '%'.$nim.'%')
+            // ->orWhere('member3_id', 'LIKE', '%'.$nim.'%')
+            // ->orWhere('member4_id', 'LIKE', '%'.$nim.'%');});
+        // })->where(function ($query) {
+        //     $query->where('member2_id', 'LIKE', '%'.$nim.'%')
+        //     ->orWhere('member3_id', 'LIKE', '%'.$nim.'%');
+        // });
+
+        // Team::where('leader_id', 'LIKE', '%'.$nim.'%')        
+        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
+        //     $q->where('memeber1_id', 'LIKE', '%' . $keyword . '%'); 
+        // })
+        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
+        //     $q->where('cuisineName', 'LIKE', '%' . $keyword . '%'); 
+        // })
+        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
+        //     $q->where('cuisineName', 'LIKE', '%' . $keyword . '%'); 
+        // })
+        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
+        //     $q->where('cuisineName', 'LIKE', '%' . $keyword . '%'); 
+        // })
+        
+        // ->get();
+
+
+
     }
 }
