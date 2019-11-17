@@ -39,7 +39,7 @@ class ReviewerController extends Controller
     	$proposals = Proposal::where('status', '=', "REVISION")     
         ->with('competition')
         ->with('department')
-
+        ->with('revision')
         ->get();
 
         $data = $proposals->toArray();

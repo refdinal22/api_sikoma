@@ -26,6 +26,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
 
     //Pengajuan
+    $router->post('mahasiswa/proposal/update', 'MahasiswaController@updateRevision');
+    $router->get('mahasiswa/proposal', 'MahasiswaController@getProposal');
     $router->get('mahasiswa/proposal/ongoing', 'MahasiswaController@onGoingProposal');
     $router->get('mahasiswa/proposal/finished', 'MahasiswaController@finishedProposal');
     $router->get('mahasiswa/proposal/report', 'MahasiswaController@getReport');
@@ -50,5 +52,18 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     //Mentor
     $router->get('mentor/proposal/ongoing', 'MentorController@onGoingProposal');
     $router->get('mentor/proposal/finished', 'MentorController@finishedProposal');
-    
+
+    //Admin
+    $router->get('admin/proposal/new', 'AdminController@newProposal');
+    $router->get('admin/proposal/revision', 'AdminController@revisionProposal');
+    $router->get('admin/proposal/finished', 'AdminController@finishedProposal');
+    $router->get('admin/proposal/rejected', 'AdminController@rejectedProposal');
+    $router->get('admin/proposal/reported', 'AdminController@reportedProposal');
+    $router->post('admin/proposal/reported', 'AdminController@updateReport');
+    $router->post('admin/proposal/revision', 'AdminController@deadlineProposal');
+
+    $router->get('admin/proposal/fund', 'AdminController@fundProposal');
+    $router->post('admin/proposal/fund', 'AdminController@updateFund');
+    $router->post('admin/proposal/disfund', 'AdminController@updateDisFund');
+
 });

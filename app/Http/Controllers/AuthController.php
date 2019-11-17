@@ -25,10 +25,10 @@ class AuthController extends Controller
 
         try {
             $user = new User;
-            $user->username = $request->input('username');
-            $user->profile_id = $request->input('profile_id');            
-            $user->password = Hash::make($request->input('password'));
 
+            $user->username = $request->input('username');         
+            $user->password = Hash::make($request->input('password'));
+            $user->role = $request->input('role');
             $user->save();            
 
             return response()->json(['user' => $user, 'message' => 'CREATED'], 201);
@@ -64,7 +64,17 @@ class AuthController extends Controller
             return response()->json(['token_absent' => $e->getMessage()], 500);
         }        
 
+        $user = Auth::user();
+        $profile = null;
+        if($user->role == 1){
+            $profile = $user->student;
+        }
+        else if($user->role == 2){
+            $profile = $user->lecturer;
+        }
+
         return response()->json([
+            'user' => $user,            
             'token' => $token,
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL().' minutes'

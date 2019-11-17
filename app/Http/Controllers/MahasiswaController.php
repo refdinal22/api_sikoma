@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\User;
 use App\Team;
 use App\Proposal;
+use App\RevisionNotes;
 use Carbon\Carbon;
 
 class MahasiswaController extends Controller
@@ -183,7 +184,34 @@ class MahasiswaController extends Controller
                 'disbursed' => $tim,                
                 'done' => $team,
             ], 200);
+    }
 
+    public function getProposal(Request $request){
+        $idprop = $request->input('id');
 
+        
+        $proposal = Proposal::find($idprop);
+        $competition = $proposal->competition;
+        $dpt = $proposal->department;
+        
+        return $proposal;
+    }
+
+    public function updateRevision(Request $request){
+        $idProposal = $request->input('id');
+        //update proposal
+        $proposal = Proposal::find($idProposal)->revision; 
+        $revisi = sizeof($proposal);
+
+        $revision = RevisionNotes::find($proposal[$revisi-1]->id);
+
+        $revision->status = 1;
+
+        $revision->save();
+
+        return response()->json([
+            'message' => 'sukses',                
+                
+        ], 200);
     }
 }
