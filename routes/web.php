@@ -30,12 +30,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('mahasiswa/proposal/finished', 'MahasiswaController@finishedProposal');
     $router->get('mahasiswa/proposal/report', 'MahasiswaController@getReport');
 
+    $router->get('mahasiswa/proposal/all', 'MahasiswaController@Dashboard');
+
     $router->post('mahasiswa/proposal', 'MahasiswaController@proposal');
     $router->post('mahasiswa/team', 'MahasiswaController@team');
 
     //Review
     $router->get('reviewer/proposal/ongoing', 'ReviewerController@onGoingProposals');
-    $router->get('reviewer/proposal/finished', 'ReviewerController@finishedProposals');    
+    $router->get('reviewer/proposal/revision', 'ReviewerController@revisionProposals');    
     $router->post('reviewer/proposal', 'ReviewerController@ReviewProposal');
 
     //Jurusan
@@ -45,6 +47,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('competitions', 'CompetitionController@getAll');
     $router->post('competitions', 'CompetitionController@addCompetition');
 
-
+    //Mentor
+    $router->get('mentor/proposal/ongoing', 'MentorController@onGoingProposal');
+    $router->get('mentor/proposal/finished', 'MentorController@finishedProposal');
     
 });

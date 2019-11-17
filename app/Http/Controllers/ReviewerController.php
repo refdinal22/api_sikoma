@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\User;
 use App\Team;
 use App\Proposal;
+use App\Student;
 use App\RevisionNotes;
 use Carbon\Carbon;
 
@@ -21,28 +22,56 @@ class ReviewerController extends Controller
     	$proposals = Proposal::where('status', '=', "PENDING")    	
     	->with('competition')
     	->with('department')->get();
+        
+        $data = $proposals->toArray();
+        
+        $index = 0;
+        foreach ($proposals as $p) {
+             $idstudent = $p->Team->first()->leader_id;
 
-    	return $proposals;
+            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $index++;
+        }
+        return $data;
     }
 
-    public function finishedProposals(){
-    	$proposals = Proposal::where('status', '=', "ACCEPT")
-    	->orWhere('status', '=', "REJECT")
-    	->with('competition')->get();
+    public function revisionProposals(){
+    	$proposals = Proposal::where('status', '=', "REVISION")     
+        ->with('competition')
+        ->with('department')
 
-    	return $proposals;
+        ->get();
+
+        $data = $proposals->toArray();
+        
+        $index = 0;
+        foreach ($proposals as $p) {
+             $idstudent = $p->Team->first()->leader_id;
+
+            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $index++;
+        }
+
+
+
+    	return $data;
     }
 
     public function ReviewProposal(Request $request){
     	$idProposal = $request->input('proposal');
     	//update proposal
     	$proposal = Proposal::find($idProposal);
+
 		$proposal->status = $request->input('status');	
 
 		if($request->input('status') == "REJECTED"){
 			$proposal->accountability_report = 1;	
 		}	
-		
+        if($request->input('status') == "WAITFUND"){
+            $proposal->realisazion_budget = $request->input('dana');
+            $proposal->budget_source = $request->input('sumber');
+        }
+		        
 		$proposal->save();
 
 		//add revision note
