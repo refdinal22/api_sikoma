@@ -19,5 +19,9 @@ class Competition extends Model
         'year', 'regist_closedate', 'regist_opendate', 'event_startdate',
         'event_enddate',
     ];
+
+    public Function proposal(){
+        return $this->hasMany('App\Proposal');
+    }
     
 }

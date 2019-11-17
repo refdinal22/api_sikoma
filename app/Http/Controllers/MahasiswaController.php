@@ -55,50 +55,90 @@ class MahasiswaController extends Controller
         ], 200); 
     }
 
-    public function getProposal(Request $request){
-
+    public function onGoingProposal(Request $request){
         $nim = $request->input('nim');
         // return $nim;
-        $team = Team::where('leader_id', 'LIKE', '%' . $nim .'%')
-        ->orWhere('member1_id', 'LIKE', '%' . $nim .'%')
-        ->orWhere('member2_id', 'LIKE', '%' . $nim .'%')
-        ->orWhere('member3_id', 'LIKE', '%' . $nim .'%')
-        ->orWhere('member4_id', 'LIKE', '%' . $nim .'%')
+        $team = Team::where('leader_id', '=', $nim)
+        ->WhereHas('proposal', function($q) use ($nim) { 
+            $q->where('status', '=', "PENDING")
+            ->orWhere('status', '=', "REVISION"); 
+        })
+        ->orWhere(function($q) use ($nim) { 
+            $q->where('member1_id', '=', $nim)
+            ->orWhere('member2_id', '=', $nim)
+            ->orWhere('member3_id', '=', $nim)
+            ->orWhere('member4_id', '=', $nim); 
+        })
+        ->WhereHas('proposal', function($q) use ($nim) { 
+            $q->where('status', '=', "PENDING")
+            ->orWhere('status', '=', "REVISION"); 
+        })        
+        ->with('proposal')
+        ->get();
+        
+        $data = $team->toArray();
+
+        $index = 0;
+        foreach ($team as $t) {
+            $data[$index]['revision'] = $t->proposal->revision;
+            $data[$index]['competition'] = $t->proposal->competition;
+            $index++;
+        }
+
+        return $data;        
+    }
+
+    public function finishedProposal(Request $request){
+        $nim = $request->input('nim');        
+        $team = Team::where('leader_id', '=', $nim)
+        ->WhereHas('proposal', function($q) use ($nim) { 
+            $q->where('status', '=', "REJECTED")
+            ->orWhere('status', '=', "ACCEPTED")
+            ->with('revision'); 
+        })
+        ->orWhere(function($q) use ($nim) { 
+            $q->where('member1_id', '=', $nim)
+            ->orWhere('member2_id', '=', $nim)
+            ->orWhere('member3_id', '=', $nim)
+            ->orWhere('member4_id', '=', $nim); 
+        })
+        ->WhereHas('proposal', function($q) use ($nim) { 
+            $q->where('status', '=', "REJECTED")
+            ->orWhere('status', '=', "ACCEPTED")
+            ->with('revision'); 
+        })        
+        ->with('proposal')
         ->get();
 
-        // return $team[0]->proposal_id;
+        $data = $team->toArray();
 
-        $proposal = Proposal::find($team[0]->proposal_id);
+        $index = 0;
+        foreach ($team as $t) {
+            $data[$index]['competition'] = $t->proposal->competition;
+            $index++;
+        }
 
-        return $proposal;
-        // Team::where(function ($query) {
-        //     $query->where('leader_id', 'LIKE', '%'.$nim.'%')
-        //     ->orWhere('member1_id', 'LIKE', '%'.$nim.'%');})->get();
-            // ->orWhere('member2_id', 'LIKE', '%'.$nim.'%')
-            // ->orWhere('member3_id', 'LIKE', '%'.$nim.'%')
-            // ->orWhere('member4_id', 'LIKE', '%'.$nim.'%');});
-        // })->where(function ($query) {
-        //     $query->where('member2_id', 'LIKE', '%'.$nim.'%')
-        //     ->orWhere('member3_id', 'LIKE', '%'.$nim.'%');
-        // });
+        return $data;        
+    }
 
-        // Team::where('leader_id', 'LIKE', '%'.$nim.'%')        
-        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
-        //     $q->where('memeber1_id', 'LIKE', '%' . $keyword . '%'); 
-        // })
-        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
-        //     $q->where('cuisineName', 'LIKE', '%' . $keyword . '%'); 
-        // })
-        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
-        //     $q->where('cuisineName', 'LIKE', '%' . $keyword . '%'); 
-        // })
-        // ->orWhereHas('memeber1_id', function($q) use ($keyword) { 
-        //     $q->where('cuisineName', 'LIKE', '%' . $keyword . '%'); 
-        // })
+    public function getReport(Request $request){
+         $department = $request->input('department');        
+
+          $proposal = Proposal::where('department_id', '=', $department)
+          ->where('accountability_report', '=', 0)->get();
+
+          // return $proposal;
+          if($proposal->count() > 0 ){
+            return response()->json([
+                'status' => $proposal->first()->accountability_report,                
+            ], 200); 
+          }
+          else{
+            return response()->json([
+                'status' => 1,                
+            ], 200);
+          }
+          
         
-        // ->get();
-
-
-
     }
 }

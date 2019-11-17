@@ -5,16 +5,16 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Team extends Model
+class RevisionNotes extends Model
 {    
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $table = 'tbm_teams';
+    protected $table = 'tbm_revision_notes';
     protected $fillable = [
-        'leader_id', 'member1_id', 'member2_id', 'member3_id', 'member4_id', 'mentor_id', 'proposal_id', 'ranking', 'competition_cat'
+        'proposal_id', 'budget_notes', 'content_notes', 'du_date', 'status'
     ];
 
     public function proposal(){

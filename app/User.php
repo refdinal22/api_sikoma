@@ -21,7 +21,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $table = 'tbm_users';
     
     protected $fillable = [
-        'profile_id', 'username', 'password', 'last_signin'
+        'username', 'password', 'last_signin'
     ];
 
     /**

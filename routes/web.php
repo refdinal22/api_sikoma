@@ -26,12 +26,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
 
     //Pengajuan
-    $router->get('mahasiswa/proposal', 'MahasiswaController@getProposal');
+    $router->get('mahasiswa/proposal/ongoing', 'MahasiswaController@onGoingProposal');
+    $router->get('mahasiswa/proposal/finished', 'MahasiswaController@finishedProposal');
+    $router->get('mahasiswa/proposal/report', 'MahasiswaController@getReport');
+
     $router->post('mahasiswa/proposal', 'MahasiswaController@proposal');
     $router->post('mahasiswa/team', 'MahasiswaController@team');
 
     //Review
-    $router->get('reviewer/proposal', 'ReviewerController@getProposals');
+    $router->get('reviewer/proposal/ongoing', 'ReviewerController@onGoingProposals');
+    $router->get('reviewer/proposal/finished', 'ReviewerController@finishedProposals');    
+    $router->post('reviewer/proposal', 'ReviewerController@ReviewProposal');
 
     //Jurusan
     $router->get('departments', 'DepartmentController@getAll');
