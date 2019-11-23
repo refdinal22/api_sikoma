@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\User;
 use Tymon\JWTAuth\Facades\JWTAuth; //use this library
+use Illuminate\Support\Facades\Hash;
 
 
 class UserController extends Controller
@@ -16,7 +18,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     /**
@@ -30,6 +32,22 @@ class UserController extends Controller
         $profile = $user->student;
         return $user;
         
+    }
+
+    public function getAll(){
+        $user = User::All();
+        
+        return $user;
+    }
+
+    public function resetPassword(Request $request){
+        $id = $request->input('id');
+
+        $user = User::find($id);
+        $user->password = Hash::make('refdinal123');
+        $user->save();
+
+        return $user;
     }
 
     /**

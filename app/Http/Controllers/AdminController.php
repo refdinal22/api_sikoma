@@ -209,4 +209,26 @@ class AdminController extends Controller
         $proposal->accountability_report = 0;
         $proposal->save();
     }
+
+     public function report(Request $request){
+        $from = $request->input('from');
+        $to = $request->input('to');
+
+        $proposals = Proposal::where('status', '=', "DONE")      
+        ->with('competition')
+        ->with('department')
+        ->whereBetween('created_at', array($from, $to))
+        ->with('revision')->get();
+        
+        $data = $proposals->toArray();
+        
+        $index = 0;
+        foreach ($proposals as $p) {
+             $idstudent = $p->Team->first()->leader_id;
+
+            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $index++;
+        }
+        return $data;
+    }
 }
