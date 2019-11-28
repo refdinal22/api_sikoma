@@ -57,87 +57,113 @@ class MahasiswaController extends Controller
     }
 
     public function onGoingProposal(Request $request){
-        $nim = $request->input('nim');
+        $id = $request->input('id');
+        $data = Proposal::where('organization_id', '=', $id)
+        ->Where(function($q) use ($id) { 
+            $q->where('status', '=', "PENDING")
+            ->orWhere('status', '=', "REVISION")
+            ->orWhere('status', '=', "WAITFUND")
+            ->orWhere('status', '=', "DISBURSEDFUND")
+            ->orWhere('status', '=', "WAITREPORT"); 
+        })
+        ->with('competition')->get();
         // return $nim;
-        $team = Team::where('leader_id', '=', $nim)
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "PENDING")
-            ->orWhere('status', '=', "REVISION")
-            ->orWhere('status', '=', "WAITFUND")
-            ->orWhere('status', '=', "DISBURSEDFUND")
-            ->orWhere('status', '=', "WAITREPORT"); 
-        })
-        ->orWhere(function($q) use ($nim) { 
-            $q->where('member1_id', '=', $nim)
-            ->orWhere('member2_id', '=', $nim)
-            ->orWhere('member3_id', '=', $nim)
-            ->orWhere('member4_id', '=', $nim); 
-        })
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "PENDING")
-            ->orWhere('status', '=', "REVISION")
-            ->orWhere('status', '=', "WAITFUND")
-            ->orWhere('status', '=', "DISBURSEDFUND")
-            ->orWhere('status', '=', "WAITREPORT"); 
-        })        
-        ->with('proposal')
-        ->get();
+        // $team = Team::where('leader_id', '=', $nim)
+        // ->WhereHas('proposal', function($q) use ($nim) { 
+        //     $q->where('status', '=', "PENDING")
+        //     ->orWhere('status', '=', "REVISION")
+        //     ->orWhere('status', '=', "WAITFUND")
+        //     ->orWhere('status', '=', "DISBURSEDFUND")
+        //     ->orWhere('status', '=', "WAITREPORT"); 
+        // })
+        // ->orWhere(function($q) use ($nim) { 
+        //     $q->where('member1_id', '=', $nim)
+        //     ->orWhere('member2_id', '=', $nim)
+        //     ->orWhere('member3_id', '=', $nim)
+        //     ->orWhere('member4_id', '=', $nim); 
+        // })
+        // ->WhereHas('proposal', function($q) use ($nim) { 
+        //     $q->where('status', '=', "PENDING")
+        //     ->orWhere('status', '=', "REVISION")
+        //     ->orWhere('status', '=', "WAITFUND")
+        //     ->orWhere('status', '=', "DISBURSEDFUND")
+        //     ->orWhere('status', '=', "WAITREPORT"); 
+        // })        
+        // ->with('proposal')
+        // ->get();
         
-        $data = $team->toArray();
+        // $data = $team->toArray();
 
-        $index = 0;
-        foreach ($team as $t) {
-            $data[$index]['revision'] = $t->proposal->revision;
-            $data[$index]['competition'] = $t->proposal->competition;
-            $index++;
-        }
+        // $index = 0;
+        // foreach ($team as $t) {
+        //     $data[$index]['revision'] = $t->proposal->revision;
+        //     $data[$index]['competition'] = $t->proposal->competition;
+        //     $index++;
+        // }
 
         return $data;        
     }
 
     public function finishedProposal(Request $request){
-        $nim = $request->input('nim');        
-        $team = Team::where('leader_id', '=', $nim)
-        ->WhereHas('proposal', function($q) use ($nim) { 
+        // $nim = $request->input('id');        
+        // $team = Team::where('leader_id', '=', $nim)
+        // ->WhereHas('proposal', function($q) use ($nim) { 
+        //     $q->where('status', '=', "REJECTED")
+        //     ->orWhere('status', '=', "DONE")
+        //     ->with('revision'); 
+        // })
+        // ->orWhere(function($q) use ($nim) { 
+        //     $q->where('member1_id', '=', $nim)
+        //     ->orWhere('member2_id', '=', $nim)
+        //     ->orWhere('member3_id', '=', $nim)
+        //     ->orWhere('member4_id', '=', $nim); 
+        // })
+        // ->WhereHas('proposal', function($q) use ($nim) { 
+        //     $q->where('status', '=', "REJECTED")
+        //     ->orWhere('status', '=', "DONE")
+        //     ->with('revision'); 
+        // })        
+        // ->with('proposal')
+        // ->get();
+
+        // $data = $team->toArray();
+
+        // $index = 0;
+        // foreach ($team as $t) {
+        //     $data[$index]['competition'] = $t->proposal->competition;
+        //     $index++;
+        // }
+        $id = $request->input('id');
+
+        $data = Proposal::where('organization_id', '=', $id)
+        ->Where(function($q) use ($id) { 
             $q->where('status', '=', "REJECTED")
-            ->orWhere('status', '=', "DONE")
-            ->with('revision'); 
+            ->orWhere('status', '=', "DONE");
         })
-        ->orWhere(function($q) use ($nim) { 
-            $q->where('member1_id', '=', $nim)
-            ->orWhere('member2_id', '=', $nim)
-            ->orWhere('member3_id', '=', $nim)
-            ->orWhere('member4_id', '=', $nim); 
-        })
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "REJECTED")
-            ->orWhere('status', '=', "DONE")
-            ->with('revision'); 
-        })        
-        ->with('proposal')
+        ->with('competition')
         ->get();
 
-        $data = $team->toArray();
-
+        $proposal = $data->toArray();
         $index = 0;
-        foreach ($team as $t) {
-            $data[$index]['competition'] = $t->proposal->competition;
+
+        foreach ($data as $pr) {
+            $proposal[$index]['team'] = $pr->Team;
             $index++;
         }
 
-        return $data;        
+        return $proposal;        
     }
 
     public function getReport(Request $request){
          $department = $request->input('department');        
 
-          $proposal = Proposal::where('department_id', '=', $department)
+          $proposal = Proposal::where('organization_id', '=', $department)
           ->where('accountability_report', '=', 0)->get();
 
           // return $proposal;
-          if($proposal->count() > 0 ){
+          if($proposal->count() > 2 ){
             return response()->json([
-                'status' => $proposal->first()->accountability_report,                
+                'status' => 0,                
             ], 200); 
           }
           else{

@@ -21,7 +21,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $table = 'tbm_users';
     
     protected $fillable = [
-        'username', 'password', 'last_signin', 'role'
+        'email', 'password', 'last_signin', 'role'
     ];
 
     /**
@@ -54,10 +54,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getJWTCustomClaims()
     {
         return [];
-    }
+    }    
 
-    public function student(){
-        return $this->hasOne('App\Student');
+    public function organization(){
+        return $this->hasOne('App\Organization');
     }
 
     public function lecturer(){

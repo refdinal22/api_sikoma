@@ -19,14 +19,14 @@ class AuthController extends Controller
     public function register(Request $request)
     {        
         $this->validate($request, [
-            'username' => 'required|string',
+            'email' => 'required|email|unique:tbm_users',
             'password' => 'required|string',
         ]);
 
         try {
             $user = new User;
 
-            $user->username = $request->input('username');         
+            $user->email = $request->input('email');         
             $user->password = Hash::make($request->input('password'));
             $user->role = $request->input('role');
             $user->save();            
@@ -47,11 +47,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {        
         $this->validate($request, [
-            'username' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);    
 
-        $credentials = $request->only(['username', 'password']);
+        $credentials = $request->only(['email', 'password']);
         try {
             if (!$token = Auth::attempt($credentials)) {
                 return response()->json(['message' => 'Unauthorized'], 401);
@@ -67,7 +67,7 @@ class AuthController extends Controller
         $user = Auth::user();
         $profile = null;
         if($user->role == 1){
-            $profile = $user->student;
+            $profile = $user->organization;
         }
         else if($user->role == 2){
             $profile = $user->lecturer;
