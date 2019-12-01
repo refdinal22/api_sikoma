@@ -28,8 +28,8 @@ class Proposal extends Model
     	return $this->hasMany('App\RevisionNotes');
     }
 
-    public function department(){
-    	return $this->belongsTo('App\Department');
+    public function organization(){
+    	return $this->belongsTo('App\Organization');
     }
 
 }

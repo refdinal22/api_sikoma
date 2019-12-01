@@ -9,9 +9,10 @@ use App\User;
 use App\Team;
 use App\Proposal;
 use App\RevisionNotes;
+use App\Student;
 use Carbon\Carbon;
 
-class MahasiswaController extends Controller
+class OrmawaController extends Controller
 {
     public function proposal(Request $request){
 
@@ -67,6 +68,25 @@ class MahasiswaController extends Controller
             ->orWhere('status', '=', "WAITREPORT"); 
         })
         ->with('competition')->get();
+
+        $proposal = $data->toArray();
+        $index = 0;
+
+        foreach ($data as $pr) {
+            $listTeam = $pr->Team;
+            $indexTeam = 0;
+            $leaderName ;
+
+            foreach ($listTeam as $team) {
+                $leaderName[$indexTeam] = Student::find($team->leader_id)->name;
+                $indexTeam++;
+            }
+            $proposal[$index]['revision'] = $pr->revision;
+            $proposal[$index]['team'] = $leaderName;
+            $index++;
+        }
+
+        return $proposal;        
         // return $nim;
         // $team = Team::where('leader_id', '=', $nim)
         // ->WhereHas('proposal', function($q) use ($nim) { 
@@ -104,35 +124,7 @@ class MahasiswaController extends Controller
         return $data;        
     }
 
-    public function finishedProposal(Request $request){
-        // $nim = $request->input('id');        
-        // $team = Team::where('leader_id', '=', $nim)
-        // ->WhereHas('proposal', function($q) use ($nim) { 
-        //     $q->where('status', '=', "REJECTED")
-        //     ->orWhere('status', '=', "DONE")
-        //     ->with('revision'); 
-        // })
-        // ->orWhere(function($q) use ($nim) { 
-        //     $q->where('member1_id', '=', $nim)
-        //     ->orWhere('member2_id', '=', $nim)
-        //     ->orWhere('member3_id', '=', $nim)
-        //     ->orWhere('member4_id', '=', $nim); 
-        // })
-        // ->WhereHas('proposal', function($q) use ($nim) { 
-        //     $q->where('status', '=', "REJECTED")
-        //     ->orWhere('status', '=', "DONE")
-        //     ->with('revision'); 
-        // })        
-        // ->with('proposal')
-        // ->get();
-
-        // $data = $team->toArray();
-
-        // $index = 0;
-        // foreach ($team as $t) {
-        //     $data[$index]['competition'] = $t->proposal->competition;
-        //     $index++;
-        // }
+    public function finishedProposal(Request $request){        
         $id = $request->input('id');
 
         $data = Proposal::where('organization_id', '=', $id)
@@ -141,13 +133,25 @@ class MahasiswaController extends Controller
             ->orWhere('status', '=', "DONE");
         })
         ->with('competition')
+        ->select('tbr_proposals.*', \DB::raw('(SELECT year FROM tbm_competitions WHERE tbr_proposals.competition_id = tbm_competitions.id ) as sort'))
+        ->orderBy('sort')
         ->get();
 
         $proposal = $data->toArray();
         $index = 0;
 
         foreach ($data as $pr) {
-            $proposal[$index]['team'] = $pr->Team;
+            $listTeam = $pr->Team;
+            $indexTeam = 0;
+            $leaderName ;
+
+            foreach ($listTeam as $team) {
+                $leaderName[$indexTeam] = Student::find($team->leader_id)->name;
+                $indexTeam++;
+            }
+
+
+            $proposal[$index]['team'] = $leaderName;
             $index++;
         }
 
@@ -174,41 +178,45 @@ class MahasiswaController extends Controller
     }
 
     public function Dashboard(Request $request){
-        $nim = $request->input('nim');        
+        $id = $request->input('id');        
 
-        $team = Team::where('leader_id', '=', $nim)
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "DONE");           
-        })        
-        ->orWhere(function($q) use ($nim) { 
-            $q->where('member1_id', '=', $nim)
-            ->orWhere('member2_id', '=', $nim)
-            ->orWhere('member3_id', '=', $nim)
-            ->orWhere('member4_id', '=', $nim); 
-        })
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "DONE");            
-        })                
+        $proposalDone = Proposal::where('organization_id', '=', $id)
+        ->where('status', '=', "DONE")        
         ->count();
 
-        $tim = Team::where('leader_id', '=', $nim)
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "DISBURSEDFUND");            
-        })        
-        ->orWhere(function($q) use ($nim) { 
-            $q->where('member1_id', '=', $nim)
-            ->orWhere('member2_id', '=', $nim)
-            ->orWhere('member3_id', '=', $nim)
-            ->orWhere('member4_id', '=', $nim); 
-        })
-        ->WhereHas('proposal', function($q) use ($nim) { 
-            $q->where('status', '=', "DISBURSEDFUND");            
-        })                        
+        $proposalRevision = Proposal::where('organization_id', '=', $id)
+        ->where('status', '=', "REVISION")
         ->count();
+
+        $proposalDisbursed = Proposal::where('organization_id', '=', $id)
+        ->where('status', '=', "DISBURSEDFUND")
+        ->count();
+
+        $proposalWaitReport = Proposal::where('organization_id', '=', $id)
+        ->where('status', '=', "WAITREPORT")
+        ->count();
+
+
+        // $tim = Team::where('leader_id', '=', $nim)
+        // ->WhereHas('proposal', function($q) use ($nim) { 
+        //     $q->where('status', '=', "DISBURSEDFUND");            
+        // })        
+        // ->orWhere(function($q) use ($nim) { 
+        //     $q->where('member1_id', '=', $nim)
+        //     ->orWhere('member2_id', '=', $nim)
+        //     ->orWhere('member3_id', '=', $nim)
+        //     ->orWhere('member4_id', '=', $nim); 
+        // })
+        // ->WhereHas('proposal', function($q) use ($nim) { 
+        //     $q->where('status', '=', "DISBURSEDFUND");            
+        // })                        
+        // ->count();
 
          return response()->json([
-                'disbursed' => $tim,                
-                'done' => $team,
+                'done' => $proposalDone,                
+                'revision' => $proposalRevision,
+                'disbursed' => $proposalDisbursed,
+                'waitreport' => $proposalWaitReport,                            
             ], 200);
     }
 
@@ -240,4 +248,5 @@ class MahasiswaController extends Controller
                 
         ], 200);
     }
+
 }

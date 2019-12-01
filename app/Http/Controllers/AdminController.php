@@ -17,7 +17,7 @@ class AdminController extends Controller
    public function newProposal(Request $request){
         $proposals = Proposal::where('status', '=', "PENDING")      
         ->with('competition')
-        ->with('department')->get();
+        ->with('organization')->get();
         
         $data = $proposals->toArray();
         
@@ -25,7 +25,7 @@ class AdminController extends Controller
         foreach ($proposals as $p) {
              $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $data[$index]['profile'] = Student::where('id', $idstudent)->first();
             $index++;
         }
         return $data;
@@ -34,7 +34,7 @@ class AdminController extends Controller
     public function revisionProposal(Request $request){
         $proposals = Proposal::where('status', '=', "REVISION")      
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->with('revision')->get();
         
         $data = $proposals->toArray();
@@ -43,7 +43,7 @@ class AdminController extends Controller
         foreach ($proposals as $p) {
              $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $data[$index]['profile'] = Student::where('id', $idstudent)->first();
             $index++;
         }
         return $data;
@@ -52,7 +52,7 @@ class AdminController extends Controller
     public function finishedProposal(Request $request){
      $proposals = Proposal::where('status', '=', "DONE")      
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->with('revision')->get();
         
         $data = $proposals->toArray();
@@ -61,7 +61,7 @@ class AdminController extends Controller
         foreach ($proposals as $p) {
              $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $data[$index]['profile'] = Student::where('id', $idstudent)->first();
             $index++;
         }
         return $data;
@@ -72,7 +72,7 @@ class AdminController extends Controller
     public function rejectedProposal(Request $request){
      $proposals = Proposal::where('status', '=', "REJECTED")      
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->with('revision')->get();
         
         $data = $proposals->toArray();
@@ -81,7 +81,7 @@ class AdminController extends Controller
         foreach ($proposals as $p) {
              $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $data[$index]['profile'] = Student::where('id', $idstudent)->first();
             $index++;
         }
         return $data;
@@ -91,7 +91,7 @@ class AdminController extends Controller
     public function reportedProposal(Request $request){
      $proposals = Proposal::where('status', '=', "WAITREPORT")      
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->with('revision')->get();
         
         $data = $proposals->toArray();
@@ -100,7 +100,7 @@ class AdminController extends Controller
         foreach ($proposals as $p) {
              $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+            $data[$index]['profile'] = Student::where('id', $idstudent)->first();
             $index++;
         }
         return $data;
@@ -177,7 +177,7 @@ class AdminController extends Controller
         $proposals = Proposal::where('status', '=', "WAITFUND")      
         ->orWhere('status', '=', "DISBURSEDFUND")
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->with('revision')->get();
         
         $data = $proposals->toArray();
@@ -216,7 +216,7 @@ class AdminController extends Controller
 
         $proposals = Proposal::where('status', '=', "DONE")      
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->whereBetween('created_at', array($from, $to))
         ->with('revision')->get();
         

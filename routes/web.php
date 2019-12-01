@@ -29,16 +29,20 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('user/reset', 'UserController@resetPassword');
 
     //Pengajuan
-    $router->post('mahasiswa/proposal/update', 'MahasiswaController@updateRevision');
-    $router->get('mahasiswa/proposal', 'MahasiswaController@getProposal');
-    $router->get('mahasiswa/proposal/ongoing', 'MahasiswaController@onGoingProposal');
-    $router->get('mahasiswa/proposal/finished', 'MahasiswaController@finishedProposal');
-    $router->get('mahasiswa/proposal/report', 'MahasiswaController@getReport');
+    $router->post('ormawa/proposal/update', 'OrmawaController@updateRevision');
+    $router->get('ormawa/proposal', 'OrmawaController@getProposal');
+    $router->get('ormawa/proposal/ongoing', 'OrmawaController@onGoingProposal');
+    $router->get('ormawa/proposal/finished', 'OrmawaController@finishedProposal');
+    $router->get('ormawa/proposal/report', 'OrmawaController@getReport');
 
-    $router->get('mahasiswa/proposal/all', 'MahasiswaController@Dashboard');
+    $router->get('ormawa/proposal/all', 'OrmawaController@Dashboard');
 
-    $router->post('mahasiswa/proposal', 'MahasiswaController@proposal');
-    $router->post('mahasiswa/team', 'MahasiswaController@team');
+    $router->post('ormawa/proposal', 'OrmawaController@proposal');
+    $router->post('ormawa/team', 'OrmawaController@team');
+
+    //Student
+    $router->get('students/', 'StudentController@getAllStudent');
+    $router->get('mentors/', 'MentorController@getAllMentor');
 
     //Review
     $router->get('reviewer/proposal/ongoing', 'ReviewerController@onGoingProposals');

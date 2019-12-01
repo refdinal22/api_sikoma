@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\User;
 use App\Team;
 use App\Proposal;
+use App\Lecturer;
 use Carbon\Carbon;
 
 class MentorController extends Controller
@@ -97,7 +98,11 @@ class MentorController extends Controller
                 'disbursed' => $tim,                
                 'done' => $team,
             ], 200);
+    }
 
+    public function getAllMentor(){
+        $lecturer = Lecturer::all();
 
+        return $lecturer;
     }
 }
