@@ -49,9 +49,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('reviewer/proposal/revision', 'ReviewerController@revisionProposals');    
     $router->post('reviewer/proposal', 'ReviewerController@ReviewProposal');
 
-    //Jurusan
-    $router->get('departments', 'DepartmentController@getAll');
-
     //Kompetisi
     $router->get('competitions', 'CompetitionController@getAll');
     $router->post('competitions', 'CompetitionController@addCompetition');
@@ -75,5 +72,29 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     //Laporan
     $router->post('admin/report', 'AdminController@report');
+
+    //Kategori
+    $router->get('admin/competitionscat', 'AdminController@getCompetitionCat');
+    $router->post('admin/competitionscat', 'AdminController@addCompetitionCat');
+    $router->delete('admin/competitionscat', 'AdminController@deleteCompetitionCat');
+    $router->post('admin/competitionscatu', 'AdminController@updateCompetitionCat');
+
+    //Jurusan
+    $router->get('departments', 'DepartmentController@getAll');
+    $router->post('departments', 'DepartmentController@addDepartment');
+    $router->delete('departments', 'DepartmentController@deleteDepartment');
+    $router->post('departmentsu', 'DepartmentController@updateDepartment');
+
+    //Prodi
+    $router->get('programs', 'SProgramController@getAll');
+    $router->post('programs', 'SProgramController@addProgram');
+    $router->delete('programs', 'SProgramController@deleteProgram');
+    $router->post('programsu', 'SProgramController@updateProgram');
+
+    //ormawa
+    $router->get('ormawa', 'OrmawaController@getAll');
+    $router->post('ormawa', 'OrmawaController@addOrmawa');
+    $router->delete('ormawa', 'OrmawaController@deleteOrmawa');
+    $router->post('ormawau', 'OrmawaController@updateOrmawa');
 
 });

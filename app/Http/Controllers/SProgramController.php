@@ -5,22 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use App\Department;
+use App\SProgram;
 
-class DepartmentController extends Controller
+class SProgramController extends Controller
 {
     public function getAll(){
-        $dpt = Department::all();
+        $sprogram = SProgram::with('department')->get();
 
-        return $dpt;
+        return $sprogram;
     }
 
-    public function addDepartment(Request $request){
+    public function addProgram(Request $request){
         $name = $request->input('name');      
+        $dpt_id = $request->input('dpt');      
 
-        $dpt = new Department;    
+        $dpt = new SProgram;    
 
         $dpt->name = $name;        
+        $dpt->department_id = $dpt_id; 
         
         $dpt->save();
 
@@ -31,21 +33,22 @@ class DepartmentController extends Controller
 
     }
 
-    public function deleteDepartment(Request $request){
+    public function deleteProgram(Request $request){
         $id = $request->input('id');      
-        $dpt = Department::find($id);
-        $dpt->delete();
+        $prg = SProgram::find($id);
+        $prg->delete();
 
         return response()->json([
             'succes' => true,               
         ], 200);    
     }
 
-    public function updateDepartment(Request $request){
+    public function updateProgram(Request $request){
         $id = $request->input('id');      
-        $dpt = Department::find($id);
+        $dpt = SProgram::find($id);
         
         $dpt->name = $request->input('name');      
+        $dpt->department_id = $request->input('dpt');
         $dpt->save();
 
         return response()->json([

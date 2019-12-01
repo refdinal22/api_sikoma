@@ -11,8 +11,28 @@ class CompetitionController extends Controller
 {
     public function getAll(){
         $cmpt = Competition::all();
+        $data = $cmpt->toArray();
+        
+        //current date
+        $currentDateTime = date('Y-m-d');
+        $date1 = new \DateTime($currentDateTime);
+        
+        $index = 0;
+        foreach ($data as $cmp) {            
+            $date2 = new \DateTime($cmp['event_startdate']);
+            $diff = $date1->diff($date2);
+            $selisih = $diff->format('%a');
 
-        return $cmpt;
+            if($selisih >= 7){
+                $data[$index]['status'] = true;
+                
+            }else{
+                $data[$index]['status'] = false;
+            }
+            $index++;
+        }
+
+        return $data;
     }
 
     public function addCompetition(Request $request){

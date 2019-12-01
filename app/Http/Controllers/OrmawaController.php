@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\User;
 use App\Team;
 use App\Proposal;
+use App\Organization;
 use App\RevisionNotes;
 use App\Student;
 use Carbon\Carbon;
@@ -24,7 +25,7 @@ class OrmawaController extends Controller
         $proposal = new Proposal;
 
         $proposal->competition_id = $request->input('competition');
-        $proposal->department_id = $request->input('department');
+        $proposal->organization_id = $request->input('organization');
         $proposal->draft_budget = $request->input('draftbudget');
         $proposal->summary = $request->input('summary');
         $proposal->proposal = $request->input('proposal');
@@ -150,7 +151,6 @@ class OrmawaController extends Controller
                 $indexTeam++;
             }
 
-
             $proposal[$index]['team'] = $leaderName;
             $index++;
         }
@@ -248,5 +248,52 @@ class OrmawaController extends Controller
                 
         ], 200);
     }
+    public function getAll(){
+        $ormawa = Organization::all();
+
+        return $ormawa;
+    }
+
+    public function addOrmawa(Request $request){
+        $name = $request->input('name');      
+        $acr = $request->input('acr');      
+
+        $dpt = new Organization;    
+
+        $dpt->name = $name;        
+        $dpt->acronym = $acr; 
+        
+        $dpt->save();
+
+        return response()->json([
+            'succes' => true,   
+            'cmpt' => $dpt->name,            
+        ], 200);    
+
+    }
+
+    public function deleteOrmawa(Request $request){
+        $id = $request->input('id');      
+        $prg = Organization::find($id);
+        $prg->delete();
+
+        return response()->json([
+            'succes' => true,               
+        ], 200);    
+    }
+
+    public function updateOrmawa(Request $request){
+        $id = $request->input('id');      
+        $dpt = Organization::find($id);
+        
+        $dpt->name = $request->input('name');      
+        $dpt->acronym = $request->input('acr');
+        $dpt->save();
+
+        return response()->json([
+            'succes' => true,               
+        ], 200);        
+    }
 
 }
+

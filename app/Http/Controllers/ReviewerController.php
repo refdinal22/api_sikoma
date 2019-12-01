@@ -21,36 +21,54 @@ class ReviewerController extends Controller
     public function onGoingProposals(){
     	$proposals = Proposal::where('status', '=', "PENDING")    	
     	->with('competition')
-    	->with('department')->get();
+    	->with('organization')->get();
         
         $data = $proposals->toArray();
         
         $index = 0;
-        foreach ($proposals as $p) {
-             $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+        foreach ($proposals as $pr) {
+            $listTeam = $pr->Team;
+            $indexTeam = 0;
+            $leaderName;
+
+            foreach ($listTeam as $team) {
+                $leaderName[$indexTeam] = Student::find($team->leader_id)->name;
+                $indexTeam++;
+            }
+            
+            $data[$index]['team'] = $leaderName;
             $index++;
         }
+        
         return $data;
     }
 
     public function revisionProposals(){
     	$proposals = Proposal::where('status', '=', "REVISION")     
         ->with('competition')
-        ->with('department')
+        ->with('organization')
         ->with('revision')
         ->get();
 
         $data = $proposals->toArray();
         
         $index = 0;
-        foreach ($proposals as $p) {
-             $idstudent = $p->Team->first()->leader_id;
 
-            $data[$index]['profile'] = Student::where('nim', $idstudent)->first();
+        foreach ($proposals as $pr) {
+            $listTeam = $pr->Team;
+            $indexTeam = 0;
+            $leaderName;
+
+            foreach ($listTeam as $team) {
+                $leaderName[$indexTeam] = Student::find($team->leader_id)->name;
+                $indexTeam++;
+            }
+            
+            $data[$index]['team'] = $leaderName;
             $index++;
         }
+        
 
 
 
