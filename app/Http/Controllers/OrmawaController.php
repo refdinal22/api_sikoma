@@ -256,12 +256,28 @@ class OrmawaController extends Controller
 
     public function addOrmawa(Request $request){
         $name = $request->input('name');      
-        $acr = $request->input('acr');      
+        $acr = $request->input('acr');
+
+        $email = strtolower($acr)."@polban.ac.id";
+        $password = "123456"; 
+
+        try {
+            $user = new User;
+
+            $user->email = $email;         
+            $user->password = Hash::make($password);
+            $user->role = 1;
+            $user->save();            
+            
+        } catch (\Exception $e) {            
+            return response()->json(['message' => 'User Registration Failed!'], 409);
+        }      
 
         $dpt = new Organization;    
 
         $dpt->name = $name;        
         $dpt->acronym = $acr; 
+        $dpt->user_id = $user->id; 
         
         $dpt->save();
 
@@ -274,8 +290,13 @@ class OrmawaController extends Controller
 
     public function deleteOrmawa(Request $request){
         $id = $request->input('id');      
-        $prg = Organization::find($id);
-        $prg->delete();
+        $org = Organization::find($id);
+
+        $user_id = $org->user_id;
+        $org->delete();
+
+        $user = User::find($user_id);
+        $user->delete();
 
         return response()->json([
             'succes' => true,               

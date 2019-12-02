@@ -100,9 +100,77 @@ class MentorController extends Controller
             ], 200);
     }
 
-    public function getAllMentor(){
-        $lecturer = Lecturer::all();
+    public function getAll(){
+        $lecturer = Lecturer::with('department')->get();
 
         return $lecturer;
+    }
+
+    public function addMentor(Request $request){
+        $nip = $request->input('nip');
+        $name = $request->input('name');      
+        $dpt = $request->input('dpt');
+
+        $front_name = explode(" ",$name);        
+        $email = strtolower($front_name[0])."@polban.ac.id";
+
+        $password = "123456"; 
+
+        try {
+            $user = new User;
+
+            $user->email = $email;         
+            $user->password = Hash::make($password);
+            $user->role = 2;
+            $user->save();            
+            
+        } catch (\Exception $e) {            
+            return response()->json(['message' => 'User Registration Failed!'], 409);
+        }      
+
+        $lct = new Lecturer;    
+
+        $lct->nip = $nip;
+        $lct->name = $name;        
+        $lct->department_id = $dpt; 
+        $lct->user_id = $user->id; 
+        
+        $lct->save();
+
+        return response()->json([
+            'succes' => true,   
+            'lct' => $lct->name,            
+        ], 200);    
+
+    }
+
+    public function deleteMentor(Request $request){
+        $id = $request->input('id');      
+        $org = Lecturer::find($id);
+
+        $user_id = $org->user_id;
+        $org->delete();
+
+        $user = User::find($user_id);
+        $user->delete();
+
+        return response()->json([
+            'succes' => true,               
+        ], 200);    
+    }
+
+    public function updateMentor(Request $request){
+        $id = $request->input('id');      
+        $dpt = Lecturer::find($id);
+        
+        $dpt->name = $request->input('name');      
+        $dpt->nip = $request->input('nip');
+        $dpt->department_id = $request->input('dpt');
+
+        $dpt->save();
+
+        return response()->json([
+            'succes' => true,               
+        ], 200);        
     }
 }

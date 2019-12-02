@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -26,7 +25,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
 
     $router->get('users', 'UserController@getAll');
-    $router->post('user/reset', 'UserController@resetPassword');
+    $router->post('df', 'UserController@resetPassword');
 
     //Pengajuan
     $router->post('ormawa/proposal/update', 'OrmawaController@updateRevision');
@@ -42,7 +41,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     //Student
     $router->get('students/', 'StudentController@getAllStudent');
-    $router->get('mentors/', 'MentorController@getAllMentor');
+    
 
     //Review
     $router->get('reviewer/proposal/ongoing', 'ReviewerController@onGoingProposals');
@@ -96,5 +95,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('ormawa', 'OrmawaController@addOrmawa');
     $router->delete('ormawa', 'OrmawaController@deleteOrmawa');
     $router->post('ormawau', 'OrmawaController@updateOrmawa');
+
+    //Mentor
+    $router->get('mentors/', 'MentorController@getAll');
+    $router->post('mentors/', 'MentorController@addMentor');
+    $router->delete('mentors/', 'MentorController@deleteMentor');
+    $router->post('mentor/', 'MentorController@updateMentor');
 
 });
