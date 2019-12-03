@@ -256,7 +256,7 @@ class AdminController extends Controller
         $proposal = Proposal::find($idProposal); 
 
         $proposal->approved_budget = $proposal->approved_budget + $budget;
-        if($proposal->approved_budget == $proposal->realisazion->budget){
+        if($proposal->approved_budget == $proposal->realisazion_budget){
             $proposal->status = "DISBURSEDFUND";        
         }            
         $proposal->accountability_report = 0;
