@@ -158,7 +158,7 @@ class AdminController extends Controller
         //update proposal
         $proposal = Proposal::find($idProposal); 
         $proposal->status = "DONE";
-        $proposal->approved_budget = $proposal->approved_budget + $budget;
+        $proposal->approved_budget = $budget;
         $proposal->accountability_report = 1;
         $proposal->save();
     }
@@ -254,9 +254,11 @@ class AdminController extends Controller
         $budget = $request->input('budget');
         //update proposal
         $proposal = Proposal::find($idProposal); 
+
         $proposal->approved_budget = $proposal->approved_budget + $budget;
-        $proposal->status = "DISBURSEDFUND";    
-                
+        if($proposal->approved_budget == $proposal->realisazion->budget){
+            $proposal->status = "DISBURSEDFUND";        
+        }            
         $proposal->accountability_report = 0;
         $proposal->save();
     }

@@ -38,11 +38,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('ormawa/proposal', 'OrmawaController@proposal');
     $router->post('ormawa/team', 'OrmawaController@team');
-
-    //Student
-    $router->get('students/', 'StudentController@getAllStudent');
     
-
     //Review
     $router->get('reviewer/proposal/ongoing', 'ReviewerController@onGoingProposals');
     $router->get('reviewer/proposal/revision', 'ReviewerController@revisionProposals');    
@@ -101,5 +97,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('mentors/', 'MentorController@addMentor');
     $router->delete('mentors/', 'MentorController@deleteMentor');
     $router->post('mentor/', 'MentorController@updateMentor');
+
+    //Student
+    $router->get('students/', 'StudentController@getAllStudent');
+    $router->post('students/', 'StudentController@addStudent');
+    $router->delete('students/', 'StudentController@deleteStudent');
+    $router->post('student/', 'StudentController@updateStudent');
+
 
 });

@@ -14,7 +14,11 @@ class Student extends Model
      */
     protected $table = 'tbm_students';
     protected $fillable = [
-        'nim', 'user_id', 'name', 'year', 'study_programme_id', 'email'
+        'nim', 'name', 'year', 'study_programme_id', 'email'
     ];
+
+    public function program(){
+        return $this->belongsTo('App\Sprogram', 'study_programme_id');
+    }
     
 }
