@@ -61,7 +61,7 @@ class StudentController extends Controller
         $std->email = $request->input('email');
         $std->year = $request->input('year');        
 
-        $dpt->save();
+        $std->save();
 
         return response()->json([
             'succes' => true,               

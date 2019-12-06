@@ -279,16 +279,17 @@ class AdminController extends Controller
         $proposals = Proposal::where('status', '=', "DONE")      
         ->with('competition')
         ->with('organization')
+        ->with('team')
         ->whereBetween('created_at', array($from, $to))
         ->get();
         
         $data = $proposals->toArray();
-        
+        // return $data;
         $index = 0;
         foreach ($proposals as $p) {
-             $idstudent = $p->Team->first()->leader_id;
-
-            $data[$index]['profile'] = Student::where('id', $idstudent)->first();
+            // return $p;
+            $idstudent = $p->team->first();
+            $data[$index]['profile'] = Student::where('id', $idstudent['leader_id'])->first();
             $index++;
         }
         return $data;

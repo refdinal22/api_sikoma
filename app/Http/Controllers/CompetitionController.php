@@ -22,13 +22,23 @@ class CompetitionController extends Controller
             $date2 = new \DateTime($cmp['event_startdate']);
             $diff = $date1->diff($date2);
             $selisih = $diff->format('%a');
-
-            if($selisih >= 7){
-                $data[$index]['status'] = true;
-                
-            }else{
-                $data[$index]['status'] = false;
+            
+            if($date2 >= $date1){
+                if($selisih >= 7){
+                    $data[$index]['status'] = true;                
+                }else{
+                  $data[$index]['status'] = false;
+                }    
             }
+            else{
+                $data[$index]['status'] = false;
+            }    
+            // if($selisih >= 7){
+            //     $data[$index]['status'] = true;
+                
+            // }else{
+            //     $data[$index]['status'] = false;
+            // }
             $index++;
         }
 

@@ -233,7 +233,14 @@ class OrmawaController extends Controller
 
     public function updateRevision(Request $request){
         $idProposal = $request->input('id');
+
         //update proposal
+        $prop = Proposal::find($idProposal);
+        $prop->draft_budget = $request->input('budget');
+        $prop->summary = $request->input('summary');
+        $prop->save();
+
+        //update revisi
         $proposal = Proposal::find($idProposal)->revision; 
         $revisi = sizeof($proposal);
 

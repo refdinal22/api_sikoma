@@ -9,6 +9,7 @@ use App\User;
 use App\Team;
 use App\Proposal;
 use App\Lecturer;
+use App\Student;
 use Carbon\Carbon;
 
 class MentorController extends Controller
@@ -25,12 +26,21 @@ class MentorController extends Controller
             ->orWhere('status', '=', "WAITREPORT"); 
         })        
         ->with('proposal')
-        ->get();
+        ->get();        
         
         $data = $team->toArray();
 
-        $index = 0;
+        $index = 0; 
         foreach ($team as $t) {
+            if($data[$index]['leader_id'] != 0 ) { $data[$index]['leader_id'] = Student::find($data[$index]['leader_id'])->name;
+            }
+            for($i=1;$i<=4;$i++){
+                if($data[$index]['member'.$i."_id"] != 0 ) { $data[$index]['member'.$i."_id"] = Student::find($data[$index]['member'.$i."_id"])->name;
+                }
+            }    
+            
+                        
+
             $data[$index]['revision'] = $t->proposal->revision;
             $data[$index]['competition'] = $t->proposal->competition;
             $index++;

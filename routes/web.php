@@ -26,6 +26,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->get('users', 'UserController@getAll');
     $router->post('df', 'UserController@resetPassword');
+    $router->post('users/password', 'UserController@changePassword');
 
     //Pengajuan
     $router->post('ormawa/proposal/update', 'OrmawaController@updateRevision');

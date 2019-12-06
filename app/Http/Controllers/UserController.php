@@ -50,6 +50,25 @@ class UserController extends Controller
         return $user;
     }
 
+    public function changePassword(Request $request){
+        $id = $request->input('id');
+
+        $this->validate($request, [
+            'password'         => 'required',
+            'password_confirm' => 'required|same:password' 
+        ]);
+        $cur_password = Hash::make($request->input('cur_password'));
+
+        $user = User::find($id);
+        // if($user->password == $cur_password){
+            $user->password = Hash::make($request->input('password'));
+            $user->save();    
+        // }    
+        
+
+        return $user;
+    }
+
     /**
      * Get all User.
      *
