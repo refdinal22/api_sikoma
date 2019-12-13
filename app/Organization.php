@@ -14,7 +14,7 @@ class Organization extends Model
      */
     protected $table = 'tbm_organization';
     protected $fillable = [ 
-        'user_id', 'name', 'acronym'
+        'user_id', 'name', 'acronym','max_unfinished_submission'
     ];
 
 

@@ -13,7 +13,7 @@ class Proposal extends Model
      */
     protected $table = 'tbr_proposals';
     protected $fillable = [
-        'competition_id', 'organization_id', 'reviewer_id', 'summary', 'status', 'accountability_report', 'draft_budget', 'realisazion_budget', 'proposal', 'budget_source'
+        'competition_id', 'organization_id', 'status', 'accountability_report', 'financial_report', 'financial_note', 'draft_budget', 'realisazion_budget', 'approved_budget', 'proposal', 'budget_source'
     ];
 
     public Function Team(){

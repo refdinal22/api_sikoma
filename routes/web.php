@@ -25,7 +25,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
 
     $router->get('users', 'UserController@getAll');
-    $router->post('df', 'UserController@resetPassword');
+    $router->post('user/reset', 'UserController@resetPassword');
     $router->post('users/password', 'UserController@changePassword');
 
     //Pengajuan
@@ -61,6 +61,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('admin/proposal/reported', 'AdminController@reportedProposal');
     $router->post('admin/proposal/reported', 'AdminController@updateReport');
     $router->post('admin/proposal/revision', 'AdminController@deadlineProposal');
+
+        //Update SPJ
+        $router->post('admin/proposal/financial', 'AdminController@updateFinancial');
+
+        //Update Pengesahan
+        $router->post('admin/proposal/legalization', 'AdminController@updateLegalization');
 
     $router->get('admin/proposal/fund', 'AdminController@fundProposal');
     $router->post('admin/proposal/fund', 'AdminController@updateFund');

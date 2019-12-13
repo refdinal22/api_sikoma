@@ -44,7 +44,7 @@ class UserController extends Controller
         $id = $request->input('id');
 
         $user = User::find($id);
-        $user->password = Hash::make('refdinal123');
+        $user->password = Hash::make('123456');
         $user->save();
 
         return $user;

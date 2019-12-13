@@ -153,13 +153,53 @@ class AdminController extends Controller
     }
 
     public function updateReport(Request $request){
-        $idProposal = $request->input('id');
-        $budget = $request->input('budget');
+        $idProposal = $request->input('id');  
+        $budget = $request->input('budget');      
         //update proposal
         $proposal = Proposal::find($idProposal); 
-        $proposal->status = "DONE";
-        $proposal->approved_budget = $budget;
-        $proposal->accountability_report = 1;
+
+        if($proposal->financial_report == 1 ){
+            $proposal->accountability_report = 1;
+            $proposal->approved_budget = $budget;
+            
+            if($proposal->legalization != null)
+                $proposal->status = "DONE";
+
+            $proposal->save();    
+        }        
+        
+    }
+
+    public function updateFinancial(Request $request){
+        $idProposal = $request->input('id');        
+        $note = $request->input('note');
+        //update proposal
+        $proposal = Proposal::find($idProposal); 
+
+        if($proposal->accountability_report == 1 && $proposal->legalization != null)
+            $proposal->status = "DONE";
+
+        if($request->input('status') == 1){            
+            $proposal->financial_report = 1;   
+        }   
+
+        if($request->input('status') == 0){
+            $proposal->financial_note = $note;
+        }
+        
+        $proposal->save();
+    }
+
+    public function updateLegalization(Request $request){
+        $idProposal = $request->input('id');
+        $legalization = $request->input('legalization');
+        //update proposal
+        $proposal = Proposal::find($idProposal); 
+
+        if($proposal->accountability_report == 1 && $proposal->financial_report == 1)
+            $proposal->status = "DONE";
+        
+        $proposal->legalization = $legalization;
         $proposal->save();
     }
 

@@ -11,6 +11,7 @@ use App\Proposal;
 use App\Organization;
 use App\RevisionNotes;
 use App\Student;
+use App\department;
 use Carbon\Carbon;
 
 class OrmawaController extends Controller
@@ -26,8 +27,7 @@ class OrmawaController extends Controller
 
         $proposal->competition_id = $request->input('competition');
         $proposal->organization_id = $request->input('organization');
-        $proposal->draft_budget = $request->input('draftbudget');
-        $proposal->summary = $request->input('summary');
+        $proposal->draft_budget = $request->input('draftbudget');        
         $proposal->proposal = $request->input('proposal');
         $proposal->status = "PENDING";
 
@@ -76,7 +76,7 @@ class OrmawaController extends Controller
         foreach ($data as $pr) {
             $listTeam = $pr->Team;
             $indexTeam = 0;
-            $leaderName ;
+            $leaderName;
 
             foreach ($listTeam as $team) {
                 $leaderName[$indexTeam] = Student::find($team->leader_id)->name;
@@ -159,13 +159,15 @@ class OrmawaController extends Controller
     }
 
     public function getReport(Request $request){
-         $department = $request->input('department');        
+         $organization_id = $request->input('organization');        
 
-          $proposal = Proposal::where('organization_id', '=', $department)
+         $object_department = Organization::find($organization_id);
+
+          $proposal = Proposal::where('organization_id', '=', $organization_id)
           ->where('accountability_report', '=', 0)->get();
-
+          
           // return $proposal;
-          if($proposal->count() > 2 ){
+          if($proposal->count() >= $object_department->max_unfinished_submission ){
             return response()->json([
                 'status' => 0,                
             ], 200); 
@@ -236,8 +238,7 @@ class OrmawaController extends Controller
 
         //update proposal
         $prop = Proposal::find($idProposal);
-        $prop->draft_budget = $request->input('budget');
-        $prop->summary = $request->input('summary');
+        $prop->draft_budget = $request->input('budget');        
         $prop->save();
 
         //update revisi
@@ -316,6 +317,7 @@ class OrmawaController extends Controller
         
         $dpt->name = $request->input('name');      
         $dpt->acronym = $request->input('acr');
+        $dpt->max_unfinished_submission = $request->input('submission');
         $dpt->save();
 
         return response()->json([
