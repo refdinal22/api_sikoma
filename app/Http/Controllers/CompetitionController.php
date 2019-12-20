@@ -24,7 +24,7 @@ class CompetitionController extends Controller
             $selisih = $diff->format('%a');
             
             if($date2 >= $date1){
-                if($selisih >= 7){
+                if($selisih >= 7 || $cmp['exception'] == 1){
                     $data[$index]['status'] = true;                
                 }else{
                   $data[$index]['status'] = false;
@@ -67,6 +67,24 @@ class CompetitionController extends Controller
             'succes' => true,   
             'cmpt' => $cmpt->year,            
         ], 200); 	
+
+        
+    }
+
+     public function updateCompetition(Request $request){
+        
+        $cmpt = Competition::find($request->input('id'));    
+
+        $cmpt->name = $request->input('name');
+        $cmpt->institute = $request->input('inst');
+        $cmpt->exception = $request->input('exc');
+        
+        $cmpt->save();
+
+        return response()->json([
+            'succes' => true,   
+            'cmpt' => $cmpt->year,            
+        ], 200);    
 
         
     }

@@ -48,6 +48,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     //Kompetisi
     $router->get('competitions', 'CompetitionController@getAll');
     $router->post('competitions', 'CompetitionController@addCompetition');
+    $router->post('competitionsu', 'CompetitionController@updateCompetition');
 
     //Mentor
     $router->get('mentor/proposal/ongoing', 'MentorController@onGoingProposal');

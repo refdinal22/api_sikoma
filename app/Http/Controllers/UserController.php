@@ -60,12 +60,13 @@ class UserController extends Controller
         $cur_password = Hash::make($request->input('cur_password'));
 
         $user = User::find($id);
-        // if($user->password == $cur_password){
+        $match = Hash::check($request->input('cur_password'), $user->password);
+
+        if($match){
             $user->password = Hash::make($request->input('password'));
             $user->save();    
-        // }    
+        }    
         
-
         return $user;
     }
 
