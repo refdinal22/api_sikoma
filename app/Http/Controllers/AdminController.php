@@ -176,7 +176,7 @@ class AdminController extends Controller
         //update proposal
         $proposal = Proposal::find($idProposal); 
 
-        if($proposal->accountability_report == 1 && $proposal->legalization != null)
+        if($proposal->accountability_report == 1 && $proposal->legalization != null && $request->input('status') == 1)
             $proposal->status = "DONE";
 
         if($request->input('status') == 1){            
